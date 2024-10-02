@@ -34,10 +34,11 @@ func (h *SSEHandler) ServeSSE(c fiber.Ctx) error {
 	c.Set("Transfer-Encoding", "chunked")
 
 	notificationChannel := h.nm.RegisterClient(userID, clientID)
+
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
+		fmt.Fprintf(w, ": connected\n\n")
 		if err := w.Flush(); err != nil {
 			fmt.Printf("Error while flushing: %v. Closing http connection.\n", err)
-
 			return
 		}
 
@@ -45,21 +46,21 @@ func (h *SSEHandler) ServeSSE(c fiber.Ctx) error {
 			select {
 			case message := <-notificationChannel:
 				fmt.Println("got a msg on notificationChannel")
-				// fmt.Fprintf(w, "event: notification\n\n data: %s\n\n", message)
 				sanitizedMessage := strings.ReplaceAll(message, "\n", "")
 				fmt.Fprintf(w, "event: notification\ndata: %s\n\n", sanitizedMessage)
 
 				if err := w.Flush(); err != nil {
-					// Refreshing page in web browser will establish a new
-					// SSE connection, but only (the last) one is alive, so
-					// dead connections must be closed here.
 					fmt.Printf("Error while flushing: %v. Closing http connection.\n", err)
 					h.nm.UnregisterClient(userID, clientID)
 					return
 				}
-				time.Sleep(5 * time.Second)
 			default:
-				fmt.Println("sleeping")
+				fmt.Fprintf(w, ": keep-alive\n\n")
+				if err := w.Flush(); err != nil {
+					fmt.Printf("Error while flushing (keep-alive): %v. Closing http connection.\n", err)
+					h.nm.UnregisterClient(userID, clientID)
+					return
+				}
 				time.Sleep(10 * time.Second)
 			}
 		}
