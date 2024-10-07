@@ -45,7 +45,6 @@ func (h *SSEHandler) ServeSSE(c fiber.Ctx) error {
 		for {
 			select {
 			case message := <-notificationChannel:
-				fmt.Println("got a msg on notificationChannel")
 				sanitizedMessage := strings.ReplaceAll(message, "\n", "")
 				fmt.Fprintf(w, "event: notification\ndata: %s\n\n", sanitizedMessage)
 

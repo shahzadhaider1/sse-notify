@@ -1,6 +1,49 @@
 # sse-notify
 Real time notifications through SSE. This repository implements a Server-Sent Events (SSE) notification system using Golang and Fiber. The system allows clients to subscribe to real-time notifications. Multiple clients can connect to the server and listen for events, such as notifications, which are pushed in real-time without requiring the client to poll the server continuously.
 
+## How To Run
+### Prerequisites
+Before running the project, ensure that you have the following installed on your system:
+
+**Go**: The project is written in Golang, so you'll need Go installed (preferably Go 1.16 or later). You can download and install Go from [here](https://go.dev/doc/install).
+
+**Postman (Optional)**: You can use Postman or any other API client to test the Server-Sent Events (SSE) endpoint.
+
+**Git**: For cloning the repository.
+
+### Step-by-Step Guide
+#### Clone the Repository
+First, clone the repository from GitHub:
+```
+git clone git@github.com:shahzadhaider1/sse-notify.git
+```
+
+#### Install Dependencies
+Once inside the project directory, download dependencies using the following command:
+```
+go mod tidy
+```
+This will fetch all the necessary packages.
+
+#### Build and Run the Application
+You can now run the application using the following command:
+```
+go run cmd/main.go
+```
+This will start the server and make the SSE notification system available at the configured port (by default, port 8080).
+
+#### Testing the SSE API with Postman
+To test the notification system, you can use Postman or curl.
+
+#### Using Postman:
+- Open Postman and create a new GET request.
+- Enter the following URL:
+    ```
+    http://localhost:8080/notifications/user1
+    ```
+- Replace `user1` with the actual user ID for whom you want to listen for notifications.
+- Click Send, and Postman will establish the connection and wait for server-sent events.
+
 ## Overview
 The SSE notification system consists of two main components:
 

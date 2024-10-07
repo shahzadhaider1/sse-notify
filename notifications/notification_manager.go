@@ -55,14 +55,10 @@ func (m *NotificationManager) SendNotification(userID, notification string) {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 
-	fmt.Println("Sending notification to user : ", userID)
 	clients, ok := m.userChannels[userID]
 	if !ok {
-		fmt.Println("Returning. No clients found for user : ", userID)
 		return
 	}
-
-	fmt.Println("here are the client channels found : ", clients)
 
 	for clientID, ch := range clients {
 		select {
